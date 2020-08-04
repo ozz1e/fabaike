@@ -1,0 +1,63 @@
+{extend name="common:base" /}
+{block name="header"}{__block__}{/block}
+
+{block name="content"}
+<body class="login-bg">
+
+<div class="login layui-anim layui-anim-up">
+    <div class="message">
+        <img src="/static/assets/images/logo.png" style="margin-left: 50px;" alt="法百科">
+        <p>法百科后台管理系统</p>
+    </div>
+
+    <form method="post" class="layui-form" >
+        <input name="name" placeholder="请输入用户名称"  type="text" lay-verify="required" class="layui-input" >
+        <hr class="hr15">
+        {:token()}
+        <input name="password" lay-verify="required" placeholder="请输入登录密码"  type="password" class="layui-input">
+        <hr class="hr15">
+        <input value="登录" lay-submit lay-filter="login" style="width:100%;" type="submit">
+        <hr class="hr20" >
+    </form>
+</div>
+{/block}
+
+{block name="footer"}
+<script>
+    $(function  () {
+        layui.use('form', function(){
+            var form = layui.form;
+
+            //监听提交
+            form.on('submit(login)', function(data){
+                $.ajax({
+                    type:"post",
+                    url:"{:url('[user.signin]')}",
+                    data:data.field,
+                    dataType:"json",
+                    success:function (res) {
+                        if(res.code==1){
+                            layer.msg(res.data.msg,{time:1000},function () {
+                                location.href="{:url('[admin.index]')}"
+                            })
+                        }else{
+                            layer.msg(res.data.msg)
+                            return false
+                        }
+                    }
+                })
+
+                return false;
+            });
+        });
+    })
+
+
+</script>
+
+
+<!-- 底部结束 -->
+
+</body>
+</html>
+{/block}
