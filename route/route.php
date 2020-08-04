@@ -10,6 +10,9 @@ Route::post('savecustomer','admin/customer/save')->name('customer.save');
 Route::get('getcustomerlist','admin/customer/index')->name('customer.list');
 Route::get('addcustomer','admin/customer/create')->name('customer.create');
 
+//权限管理
+Route::get('authlist','admin/auth/index')->name('auth.list');
+
 
 //banner管理路由
 Route::post('bannerdel','admin/banner/delete')->name('banner.del');

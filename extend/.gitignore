@@ -1,2 +1,9 @@
-*
-!.gitignore
+/.idea
+/.vscode
+*.log
+.env
+.DS_Store
+# 忽略 vi/vim 非正常关闭文件
+*.swp
+public/uploads
+

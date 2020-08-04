@@ -15,10 +15,11 @@
             <th>
                 <div class="layui-unselect header layui-form-checkbox" lay-skin="primary"><i class="layui-icon">&#xe605;</i></div>
             </th>
-            <th>序号</th>
-            <th>图片</th>
-            <th>跳转地址</th>
-            <th>设为首页</th>
+            <th>id</th>
+            <th>规则地址</th>
+            <th>规则名称</th>
+            <th>条件</th>
+            <th>状态</th>
             <th>操作</th></tr>
         </thead>
         <tbody>
@@ -29,14 +30,21 @@
                     <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='2'><i class="layui-icon">&#xe605;</i></div>
                 </td>
                 <td>{$item.id}</td>
-                <td><img src="{$item.pic}" alt="图片" title="图片" width="50" height="50"></td>
-                <td>{$item.url}</td>
+                <td>{$item.name}</td>
+                <td>{$item.title}</td>
+                <td>{$item.condition}</td>
                 <td>
-<input type="checkbox" value="{$item.id}" {if $item.is_index==1}checked=""{/if} name="is_index"  lay-skin="switch" lay-filter="is_index" lay-text="">
-
-                </div>
+                {if $item.status}
+                <span style="color:green;">正常</span>
+                {else/}
+                <span style="color:red;">禁用</span>
+                {/if}
                 </td>
-                <td><a title="删除" onclick="item_del(this,{$item.id})" href="javascript:;">
+                <td>
+                <a title="编辑" class="layui-btn layui-btn-normal layui-btn-xs" onclick="item_edit(this,{$item.id})" href="javascript:;">
+                                                    编辑
+                                                  </a>
+                <a title="删除" class="layui-btn layui-btn-danger layui-btn-xs" onclick="item_del(this,{$item.id})" href="javascript:;">
                                     删除
                                   </a></td>
             </tr>
@@ -119,7 +127,7 @@
         });
     }
 
-
+    }
 </script>
 
 </body>

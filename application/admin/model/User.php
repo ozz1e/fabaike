@@ -9,7 +9,7 @@ use app\admin\validate\User as UserValidate;
 
 class User extends Model
 {
-    protected $table = 'fbk_admin';
+    protected $name = 'admin';
 
     public static function userLogin($info)
     {
