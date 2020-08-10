@@ -1,0 +1,99 @@
+{extend name="common:base" /}
+{block name="header"}{__block__}{/block}
+
+{block name="content"}
+<body>
+<div class="x-body layui-anim layui-anim-up">
+    <form class="layui-form">
+        <div class="layui-form-item">
+            <label for="L_contract_name" class="layui-form-label">
+                合同名称
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="contract_name" name="contract_name" required="" lay-verify=""
+                       autocomplete="off" class="layui-input">
+            </div>
+
+        </div>
+        <div class="layui-form-item">
+            <label for="L_download_times" class="layui-form-label">
+                下载次数
+            </label>
+            <div class="layui-input-inline">
+                <input type="number" id="download_times" name="download_times" required="" lay-verify=""
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="L_hits" class="layui-form-label">
+                合同附件
+            </label>
+            <div class="layui-input-inline">
+                <button type="button" class="layui-btn layui-btn-primary" id="upload_file"><i class="layui-icon"></i>上传合同</button>
+        </div>
+        </div>
+
+
+        <div class="layui-form-item" style="margin-top: 15px;text-align: center;">
+            <a  class="layui-btn" id="cancel">
+                取消
+            </a>
+            <button  class="layui-btn" lay-filter="add" lay-submit="" id="add_btn">
+                确定
+            </button>
+        </div>
+    </form>
+</div>
+{/block}
+
+{block name="footer"}
+<script>
+    layui.use(['form','layer','upload'], function(){
+        $ = layui.jquery;
+        var form = layui.form
+            ,layer = layui.layer
+            ,upload = layui.upload;
+
+
+        //选完文件后不自动上传
+        upload.render({
+            elem: '#upload_file'
+            ,url: "{:url('[contract.add]')}"
+            ,data: {
+                contract_name: function(){
+                    return $('#contract_name').val();
+                },
+                download_times:function () {
+                    return $('#download_times').val();
+                }
+
+            }
+            ,auto:false
+            ,bindAction:'#add_btn'
+            ,multiple: false //是否允许多文件上传。设置 true即可开启。不支持ie8/9
+            ,accept:'file'
+            ,exts:'doc|docx|txt'
+            ,size:1024*10    //限制附件大小10M
+            // ,multiple: false
+            ,done: function(res){
+                var index = parent.layer.getFrameIndex(window.name);
+                layer.msg(res.data.msg,{icon:1,time:1000},function () {
+                    parent.layer.close(index);
+                });
+                parent.location.reload();
+            }
+        });
+
+        //取消按钮
+        $("#cancel").on("click",function () {
+            var index = parent.layer.getFrameIndex(window.name);
+            parent.layer.close(index);
+        })
+
+    });
+</script>
+
+</body>
+
+</html>
+{/block}

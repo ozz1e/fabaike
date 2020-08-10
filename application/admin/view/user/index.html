@@ -1,0 +1,150 @@
+{extend name="common:base" /}
+{block name="header"}{__block__}{/block}
+
+{block name="content"}
+<body>
+<div class="x-body">
+    <blockquote class="layui-elem-quote">平台用户管理<a class="layui-btn layui-btn-primary layui-btn-sm" style="float:right" href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">ဂ</i>刷新</a></blockquote>
+
+    <xblock>
+        <div style="line-height:30px;"><i class="layui-icon" style="font-size:18px;">&#xe615;</i><span style="padding-left:5px;">筛选查询</span></div>
+    </xblock>
+    <form class="layui-form">
+        <div class="layui-form-item">
+
+            <div class="layui-input-inline">
+                <input type="text" value="{present name='param'}{$param}{/present}" name="filter_content" required="" lay-verify=""
+                       autocomplete="off" class="layui-input" placeholder="输入账号/用户昵称">
+            </div>
+            <button type="button" class="layui-btn" lay-filter="search" lay-submit="">开始筛选</button>
+        </div>
+    </form>
+</div>
+
+<xblock>
+    <button class="layui-btn" onclick="x_admin_show('新增成员','{:url("[user.create]")}',400,450)"><i class="layui-icon"></i>新增</button>
+</xblock>
+
+<table class="layui-table layui-form" id="courselist">
+    <thead>
+    <tr>
+        <th>
+            <div class="layui-unselect header layui-form-checkbox" lay-skin="primary"><i class="layui-icon">&#xe605;</i></div>
+        </th>
+        <th>id</th>
+        <th>账号</th>
+        <th>用户昵称</th>
+        <th>电话号码</th>
+        <th>拥有的角色</th>
+        <th>创建时间</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    {present name="result"}
+    {volist name="result" id="item"}
+    <tr>
+        <td>
+            <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='2'><i class="layui-icon">&#xe605;</i></div>
+        </td>
+        <td>{$item.id}</td>
+        <td>{$item.name}</td>
+        <td>{$item.nick_name}</td>
+        <td>{$item.phone_number}</td>
+        <td>{$item.title|default="暂无"}</td>
+        <td>{$item.create_time|date='Y-m-d H:m:i'}</td>
+        <td>
+            <a href="javascript:;" style="color:#1abc9c;display: inline-block;margin-right: 15px;">选择角色</a>
+            <a href="javascript:;" onclick="x_admin_show('重置密码','{:url("[user.reset]",['id'=>$item.id])}',400,450)" style="color:#1abc9c;display: inline-block;margin-right: 15px;">重置密码</a>
+            <a href="javascript:;" style="color:#1abc9c;display: inline-block;margin-right: 15px;">删除</a>
+        </td>
+    </tr>
+    {/volist}
+    {/present}
+    {notempty name="message"}
+    <tr><td colspan="8">{$message}</td><tr>
+        {/notempty}
+
+        {present name="list"}
+        {volist name="list" id="item"}
+    <tr>
+        <td>
+            <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='2'><i class="layui-icon">&#xe605;</i></div>
+        </td>
+        <td>{$item.id}</td>
+        <td>{$item.name}</td>
+        <td>{$item.nick_name}</td>
+        <td>{$item.phone_number}</td>
+        <td>{$item.title|default="暂无"}</td>
+        <td>{$item.create_time|date='Y-m-d H:m:i'}</td>
+        <td>
+            <a href="javascript:;" style="color:#1abc9c;display: inline-block;margin-right: 15px;">选择角色</a>
+            <a href="javascript:;" onclick="x_admin_show('重置密码','{:url("[user.reset]",['id'=>$item.id])}',400,270)"  style="color:#1abc9c;display: inline-block;margin-right: 15px;">重置密码</a>
+            <a href="javascript:;" onclick="item_del(this,{$item.id})" style="color:#1abc9c;display: inline-block;margin-right: 15px;">删除</a>
+        </td>
+    </tr>
+    {/volist}
+    {/present}
+
+    </tbody>
+</table>
+
+</div>
+{/block}
+
+{block name="footer"}
+<script>
+    layui.use(['form','laydate'], function(){
+        $ = layui.jquery;
+        var form = layui.form;
+
+
+        form.on('submit(search)', function(data){
+            var param = data.field.filter_content
+            if( !param ){
+                layer.msg('查询内容不能为空')
+                return false
+            }
+            window.location.href = "{:url('[user.search]')}"+"?filter_content="+param
+        });
+
+
+    });
+
+
+
+
+    /*删除*/
+    function item_del(obj,id){
+        layer.confirm('确认要删除吗？',function(index){
+            //发异步删除数据
+            $.ajax({
+                'type':'post',
+                'url':"{:url('[user.del]')}",
+                'data':{'id':id},
+                'dataType':'json',
+                success:function(res){
+                    if(res.code==1){
+                        $(obj).parents("tr").remove();
+                        layer.msg(res.data.msg,{icon:1,time:1000});
+                    }else{
+                        layer.msg(res.msg)
+                    }
+                },error:function(){
+                    layer.msg('删除失败')
+                    return false
+                }
+            })
+
+        });
+    }
+
+
+</script>
+
+</body>
+
+</html>
+{/block}

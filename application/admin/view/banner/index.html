@@ -1,0 +1,128 @@
+{extend name="common:base" /}
+{block name="header"}{__block__}{/block}
+
+{block name="content"}
+<body>
+<div class="x-body">
+<blockquote class="layui-elem-quote">banner管理<a class="layui-btn layui-btn-primary layui-btn-sm" style="float:right" href="javascript:location.replace(location.href);" title="刷新">
+                                                     <i class="layui-icon" style="line-height:30px">ဂ</i>刷新</a></blockquote>
+    <xblock>
+        <button class="layui-btn" onclick="x_admin_show('新增图片','{:url("[banner.create]")}',450,450)"><i class="layui-icon"></i>新增</button>
+    </xblock>
+    <table class="layui-table layui-form" id="bannerlist">
+        <thead>
+        <tr>
+            <th>
+                <div class="layui-unselect header layui-form-checkbox" lay-skin="primary"><i class="layui-icon">&#xe605;</i></div>
+            </th>
+            <th>序号</th>
+            <th>图片</th>
+            <th>跳转地址</th>
+            <th>设为首页</th>
+            <th>操作</th></tr>
+        </thead>
+        <tbody>
+
+        {volist name="list" id="item"}
+            <tr>
+                <td>
+                    <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='2'><i class="layui-icon">&#xe605;</i></div>
+                </td>
+                <td>{$item.id}</td>
+                <td><img src="{$item.pic}" alt="图片" title="图片" width="50" height="50"></td>
+                <td>{$item.url}</td>
+                <td>
+<input type="checkbox" value="{$item.id}" {if $item.is_index==1}checked=""{/if} name="is_index"  lay-skin="switch" lay-filter="is_index" lay-text="">
+
+                </div>
+                </td>
+                <td><a title="删除" onclick="item_del(this,{$item.id})" href="javascript:;">
+                                    删除
+                                  </a></td>
+            </tr>
+        {/volist}
+
+
+        </tbody>
+    </table>
+    <div class="page">
+        <div>
+            {$list|raw}
+        </div>
+    </div>
+
+</div>
+{/block}
+
+{block name="footer"}
+<script>
+    layui.use(['form','laydate'], function(){
+        $ = layui.jquery;
+        var laydate = layui.laydate;
+        var form = layui.form;
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#start' //指定元素
+        });
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#end' //指定元素
+        });
+
+        //监听switch开关
+        form.on('switch(is_index)', function(data){
+            let is_index=null
+            if( data.elem.checked ){
+                is_index=1
+            }else{
+                is_index=0
+            }
+            $.ajax({
+                type:"post",
+                url:"{:url('[banner.is_index]')}",
+                data:{'id':data.value,'is_index':is_index},
+                dataType:"json",
+                success:function(res){
+                    layer.msg(res.data.msg)
+                }
+            })
+
+
+        });
+    });
+
+
+    /*删除*/
+    function item_del(obj,id){
+        layer.confirm('确认要删除吗？',function(index){
+            //发异步删除数据
+            $.ajax({
+            'type':'post',
+            'url':"{:url('[banner.del]')}",
+            'data':{'id':id},
+            'dataType':'json',
+            success:function(res){
+                if(res.code==1){
+                    $(obj).parents("tr").remove();
+                    layer.msg('已删除!',{icon:1,time:1000});
+                }else{
+                    layer.msg(res.msg)
+                }
+            },error:function(){
+                layer.msg('删除失败')
+                return false
+            }
+            })
+
+        });
+    }
+
+
+</script>
+
+</body>
+
+</html>
+{/block}

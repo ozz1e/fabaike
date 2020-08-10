@@ -1,0 +1,182 @@
+{extend name="common:base" /}
+{block name="header"}
+{__block__}
+<!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+{/block}
+{block name="content"}
+
+{block name="content"}
+<body class="layui-anim layui-anim-up">
+<div class="x-body">
+    <blockquote class="layui-elem-quote">客户管理<a class="layui-btn layui-btn-primary layui-btn-sm" style="float:right" href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">ဂ</i>刷新</a></blockquote>
+
+    <xblock>
+        <div style="line-height:30px;"><i class="layui-icon" style="font-size:18px;">&#xe615;</i><span style="padding-left:5px;">筛选查询</span></div>
+    </xblock>
+    <div class="layui-row">
+        <form class="layui-form layui-col-md12 x-so" action="{:url('[customer.search]')}" method="get">
+            <label for="phone_number">用户手机号:</label>
+            <input class="layui-input" value="{present name='params.phone_number'}{$params.phone_number}{/present}" placeholder="请输入用户手机号码" name="phone_number" style="margin-right: 10px">
+            {:token()}
+            <label for="wechat_name">微信昵称:</label>
+            <input class="layui-input" value="{present name='params.wechat_name'}{$params.wechat_name}{/present}" placeholder="请输入微信昵称" name="wechat_name" style="margin-right: 10px">
+            <label for="real_name">真实姓名:</label>
+            <input type="text" name="real_name" value="{present name='params.real_name'}{$params.real_name}{/present}"  placeholder="请输入真实姓名"  class="layui-input" style="margin-right: 10px">
+            <label for="type">类型:</label>
+            <div class="layui-input-inline">
+                <select name="type">
+                    <option value="">请选择</option>
+                    <option value="1" {present name="params.type"}{if $params.type==1}selected{/if}{/present}>普通</option>
+                    <option value="2" {present name="params.type"}{if $params.type==2}selected{/if}{/present}>金牌私人法律顾问</option>
+                    <option value="3" {present name="params.type"}{if $params.type==3}selected{/if}{/present}>王牌私人法律顾问</option>
+                </select>
+            </div>
+            <button type="submit" class="layui-btn"  lay-submit="" lay-filter="search">开始筛选</button>
+        </form>
+    </div>
+    <xblock>
+        <button class="layui-btn" onclick="x_admin_show('新增','{:url("[customer.create]")}',400,550)"><i class="layui-icon"></i>新增</button>
+    </xblock>
+    <table class="layui-table">
+        <thead>
+        <tr>
+            <th>
+                <div class="layui-unselect header layui-form-checkbox" lay-skin="primary"><i class="layui-icon">&#xe605;</i></div>
+            </th>
+            <th>编号</th>
+            <th>头像</th>
+            <th>微信昵称</th>
+            <th>手机号码</th>
+            <th>类型</th>
+            <th>账户总余额（元）</th>
+            <th>真实姓名</th>
+            <th>身份证号码</th>
+            <th>注册时间</th>
+            <th width="100">操作</th></tr>
+        </thead>
+        <tbody>
+
+        {present name="message"}
+        <th colspan="11">{$message}</th>
+        {/present}
+        {present name="result"}
+            {volist name="result" id="item"}
+        <tr>
+            <td>
+                <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='2'><i class="layui-icon">&#xe605;</i></div>
+            </td>
+            <td>{$item.customer_id}</td>
+            <td><img src="{$item.avatar}" alt="头像" title="头像" width="50" height="50"></td>
+            <td>{$item.wechat_name}</td>
+            <td>{$item.phone_number}</td>
+            <td>{$item.type}</td>
+            <td>{$item.account_balance}</td>
+            <td>{$item.real_name}</td>
+            <td>{$item.identity_card}</td>
+            <td>{$item.regtime}</td>
+            <td class="td-manage">
+                <a title="编辑"  onclick="x_admin_show('编辑','member-edit.html',600,400)" href="javascript:;">
+                    <button type="button" class="layui-btn layui-btn-xs layui-btn-normal">编辑</button>
+                </a>
+                <a onclick="x_admin_show('重置密码','member-password.html',600,400)" title="重置密码" href="javascript:;">
+                    <button type="button" class="layui-btn layui-btn-xs layui-btn-danger">重置密码</button>
+                </a>
+            </td>
+        </tr>
+            {/volist}
+
+        {/present}
+
+       {present name="data"}
+       {volist name="data" id="item"}
+       <tr>
+           <td>
+               <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='2'><i class="layui-icon">&#xe605;</i></div>
+           </td>
+           <td>{$item.customer_id}</td>
+           <td><img src="{$item.avatar}" alt="头像" title="头像" width="50" height="50"></td>
+           <td>{$item.wechat_name}</td>
+           <td>{$item.phone_number}</td>
+           <td>{$item.type}</td>
+           <td>{$item.account_balance}</td>
+           <td>{$item.real_name}</td>
+           <td>{$item.identity_card}</td>
+           <td>{$item.regtime}</td>
+           <td class="td-manage">
+               <a title="编辑"  onclick="x_admin_show('编辑','member-edit.html',600,400)" href="javascript:;">
+                   <button type="button" class="layui-btn layui-btn-xs layui-btn-normal">编辑</button>
+               </a>
+               <a onclick="x_admin_show('重置密码','member-password.html',600,400)" title="重置密码" href="javascript:;">
+                   <button type="button" class="layui-btn layui-btn-xs layui-btn-danger">重置密码</button>
+               </a>
+           </td>
+       </tr>
+       {/volist}
+        {/present}
+
+
+        </tbody>
+    </table>
+    <div class="page">
+        <div>
+            {present name="result"}
+            {$result|raw}
+            {/present}
+           {present name="data"}
+            {$data|raw}
+            {/present}
+        </div>
+    </div>
+
+</div>
+{/block}
+
+{block name="footer"}
+<script>
+    layui.use(['laydate','form'], function(){
+        $ = layui.jquery;
+        var laydate = layui.laydate;
+        var form = layui.form;
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#start' //指定元素
+        });
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#end' //指定元素
+        });
+
+        // form.on('submit(search)', function(data){
+        //     var param = data.field
+        //     $.get({
+        //         url:"{:url('[customer.search]')}",
+        //         data:param,
+        //         dataType:"html"
+        //     })
+        // });
+
+    });
+
+
+    /*用户-删除*/
+    function member_del(obj,id){
+        layer.confirm('确认要删除吗？',function(index){
+            //发异步删除数据
+            $(obj).parents("tr").remove();
+            layer.msg('已删除!',{icon:1,time:1000});
+        });
+    }
+
+</script>
+
+</body>
+
+</html>
+{/block}

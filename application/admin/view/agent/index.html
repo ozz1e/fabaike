@@ -1,0 +1,112 @@
+{extend name="common:base" /}
+{block name="header"}{__block__}{/block}
+
+{block name="content"}
+<body>
+<div class="x-body">
+    <blockquote class="layui-elem-quote">经纪人管理<a class="layui-btn layui-btn-primary layui-btn-sm" style="float:right" href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">ဂ</i>刷新</a></blockquote>
+
+    <xblock>
+        <div style="line-height:30px;"><i class="layui-icon" style="font-size:18px;">&#xe615;</i><span style="padding-left:5px;">筛选查询</span></div>
+    </xblock>
+    <div class="layui-row">
+        <form class="layui-form layui-col-md12 x-so" action="{:url('[agent.search]')}" method="get">
+            <label for="inviter_phone_number">邀请者手机号:</label>
+            <input class="layui-input" value="{present name='params.inviter_phone_number'}{$params.inviter_phone_number}{/present}" placeholder="请输入手机号码" name="inviter_phone_number" style="margin-right: 10px">
+            {:token()}
+            <label for="phone_number">被邀请者手机号:</label>
+            <input class="layui-input" value="{present name='params.phone_number'}{$params.phone_number}{/present}" placeholder="请输入手机号码" name="phone_number" style="margin-right: 10px">
+            <button type="submit" class="layui-btn"  lay-submit="" lay-filter="search">开始筛选</button>
+        </form>
+    </div>
+
+</div>
+
+
+    <table class="layui-table layui-form" id="bannerlist">
+        <thead>
+        <tr>
+            <th>
+                <div class="layui-unselect header layui-form-checkbox" lay-skin="primary"><i class="layui-icon">&#xe605;</i></div>
+            </th>
+            <th>用户昵称</th>
+            <th>头像</th>
+            <th>手机号</th>
+            <th>邀请者手机号</th>
+            <th>邀请时间</th>
+            <th>订单量</th>
+            <th>订单总额（元）</th>
+            <th>贡献利润（元）</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {present name="result"}
+            {volist name="result" id="item"}
+        <tr>
+            <td>
+                <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='2'><i class="layui-icon">&#xe605;</i></div>
+            </td>
+            <td>{$item.wechat_name}</td>
+            <td><img src="{$item.avatar}" alt="图片" title="图片" width="50" height="50" style="border-radius: 50%"></td>
+            <td>{$item.phone_number}</td>
+            <td>{$item.inviter_phone_number}</td>
+            <td>{$item.invitation_time}</td>
+            <td>{$item.orders}</td>
+            <td>{$item.order_amount}</td>
+            <td>{$item.profit}</td>
+        </tr>
+            {/volist}
+        {/present}
+
+       {present name="list"}
+           {volist name="list" id="item"}
+           <tr>
+               <td>
+                   <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='2'><i class="layui-icon">&#xe605;</i></div>
+               </td>
+               <td>{$item.wechat_name}</td>
+               <td><img src="{$item.avatar}" alt="图片" title="图片" width="50" height="50" style="border-radius: 50%"></td>
+               <td>{$item.phone_number}</td>
+               <td>{$item.inviter_phone_number}</td>
+               <td>{$item.invitation_time}</td>
+               <td>{$item.orders}</td>
+               <td>{$item.order_amount}</td>
+               <td>{$item.profit}</td>
+           </tr>
+           {/volist}
+        {/present}
+
+
+</tbody>
+</table>
+<div class="page">
+    <div>
+        {present name="result"}
+            {$result|raw}
+        {/present}
+        {present name="list"}
+            {$list|raw}
+        {/present}
+    </div>
+</div>
+
+</div>
+{/block}
+
+{block name="footer"}
+<script>
+    layui.use(['form','laydate'], function(){
+        $ = layui.jquery;
+        var form = layui.form;
+
+
+    });
+
+</script>
+
+</body>
+
+</html>
+{/block}

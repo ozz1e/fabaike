@@ -1,0 +1,191 @@
+{extend name="common:base" /}
+{block name="header"}
+{__block__}
+<!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+<!--[if lt IE 9]>
+<script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+<script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+{/block}
+
+{block name="content"}
+<body>
+<div class="x-body layui-anim layui-anim-up">
+    <form class="layui-form">
+        <div class="layui-form-item">
+            <label for="wechat_name" class="layui-form-label">
+                <span class="x-red">*</span>微信昵称
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="wechat_name" name="wechat_name" required="" lay-verify="wechat_name"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        {:token()}
+        <div class="layui-form-item">
+            <label for="phone_number" class="layui-form-label">
+                <span class="x-red">*</span>手机号码
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="phone_number" name="phone_number" required="" lay-verify="phone_number"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="account_balance" class="layui-form-label">
+                账户余额
+            </label>
+            <div class="layui-input-inline">
+                <input type="number" id="account_balance" name="account_balance" required="" lay-verify="account_balance"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="real_name" class="layui-form-label">
+                <span class="x-red">*</span>真实姓名
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="real_name" name="real_name" required="" lay-verify="real_name"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="identity_card" class="layui-form-label">
+                <span class="x-red">*</span>身份证号码
+            </label>
+            <div class="layui-input-inline">
+                <input type="number" id="identity_card" name="identity_card" required="" lay-verify="identity_card"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="type" class="layui-form-label">
+                <span class="x-red">*</span>类型
+            </label>
+            <div class="layui-input-inline">
+                <select name="type" id="type" lay-verify="required">
+                    <option value="">请选择</option>
+                    <option value="1">普通</option>
+                    <option value="2">金牌私人法律顾问</option>
+                    <option value="3">王牌私人法律顾问</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="avatar" class="layui-form-label">
+                头像
+            </label>
+            <div class="layui-input-inline">
+                <button type="button" class="layui-btn layui-btn-primary" id="upload_avatar"><i class="layui-icon"></i>上传头像</button>
+            </div>
+        </div>
+
+        <div class="layui-form-item" style="margin-top: 15px;text-align: center;">
+            <a  class="layui-btn" id="cancel">
+                取消
+            </a>
+            <button  class="layui-btn" lay-filter="add" lay-submit="" id="add_btn">
+                确定
+            </button>
+        </div>
+    </form>
+</div>
+{/block}
+
+{block name="footer"}
+<script>
+    layui.use(['form','layer','upload'], function(){
+        $ = layui.jquery;
+        var form = layui.form
+            ,layer = layui.layer
+            ,upload = layui.upload;
+
+        //自定义验证规则
+        form.verify({
+            wechat_name: function(value){
+                if(value.length > 16){
+                    return '微信昵称长度不能超过16';
+                }
+            }
+            ,phone_number: [/(.+){11,14}$/, '手机号长度过长']
+            ,identity_card: [/(.+){18}$/, '身份证长度必须为18位']
+        });
+
+        //选完文件后不自动上传
+        upload.render({
+            elem: '#upload_avatar'
+            ,url: "{:url('[customer.save]')}"
+            ,data: {
+                wechat_name: function(){
+                    return $('#wechat_name').val();
+                },
+                phone_number:function () {
+                    return $('#phone_number').val();
+                },
+                type:function () {
+                    return $('#type').val();
+                },
+                account_balance:function () {
+                    return $('#account_balance').val();
+                },
+                real_name:function () {
+                    return $('#real_name').val();
+                },
+                identity_card:function () {
+                    return $('#identity_card').val();
+                }
+
+
+            }
+            ,auto:false
+            ,bindAction:'#add_btn'
+            ,multiple: false //是否允许多文件上传。设置 true即可开启。不支持ie8/9
+            ,accept:'images'
+            ,size:1024*2    //限制附件大小2M
+            // ,multiple: false
+            ,done: function(res){
+                var index = parent.layer.getFrameIndex(window.name);
+                layer.msg(res.data.msg,{icon:1,time:1000},function () {
+                    parent.layer.close(index);
+                });
+                parent.location.reload();
+            }
+        });
+
+        //监听提交
+        form.on('submit(add)', function(data){
+            //发异步，把数据提交给php
+            $.ajax({
+                type:'post',
+                data:data.field,
+                dataType:'json',
+                url:'{:url("[customer.save]")}',
+                success:function (res) {
+
+                },error:function () {
+                    return false
+                }
+
+            })
+            layer.alert("增加成功", {icon: 6},function () {
+                // 获得frame索引
+                var index = parent.layer.getFrameIndex(window.name);
+                //关闭当前frame
+                parent.layer.close(index);
+            });
+            return false;
+        });
+
+        //取消按钮
+        $("#cancel").on("click",function () {
+            var index = parent.layer.getFrameIndex(window.name);
+            parent.layer.close(index);
+        })
+
+    });
+</script>
+
+</body>
+
+</html>
+{/block}

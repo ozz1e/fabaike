@@ -1,0 +1,189 @@
+{extend name="common:base" /}
+{block name="header"}{__block__}{/block}
+
+{block name="content"}
+<body>
+<div class="x-body">
+    <blockquote class="layui-elem-quote">角色管理<a class="layui-btn layui-btn-primary layui-btn-sm" style="float:right" href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">ဂ</i>刷新</a></blockquote>
+
+    <xblock>
+        <div style="line-height:30px;"><i class="layui-icon" style="font-size:18px;">&#xe615;</i><span style="padding-left:5px;">筛选查询</span></div>
+    </xblock>
+    <form class="layui-form">
+        <div class="layui-form-item">
+            <div class="layui-input-inline">
+                <input type="text" value="{present name='params'}{$params}{/present}" name="title" required="" lay-verify=""
+                       autocomplete="off" class="layui-input" placeholder="输入角色名称">
+            </div>
+            <button type="button" class="layui-btn" lay-filter="search" lay-submit="">开始筛选</button>
+        </div>
+    </form>
+</div>
+
+<xblock>
+    <button class="layui-btn" onclick="item_add()"><i class="layui-icon"></i>新增</button>
+</xblock>
+
+<table class="layui-table layui-form" id="courselist">
+    <thead>
+    <tr>
+        <th>
+            <div class="layui-unselect header layui-form-checkbox" lay-skin="primary"><i class="layui-icon">&#xe605;</i></div>
+        </th>
+        <th>角色名称</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+
+
+
+    {present name="result"}
+    <tr>
+        <td>
+            <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='2'><i class="layui-icon">&#xe605;</i></div>
+        </td>
+        <td>{$result.title}</td>
+        <td>
+            <a href="javascript:;" style="display: inline-block;margin-right: 10px;color: #1abc9c;">分配权限</a>
+            <a href="javascript:;" style="display: inline-block;margin-right: 10px;color: #1abc9c;">删除</a>
+        </td>
+    </tr>
+    {/present}
+    {notempty name="message"}
+    <tr><td colspan="2">{$message}</td><tr>
+        {/notempty}
+
+        {present name="list"}
+    <tr>
+        <td>
+            <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='2'><i class="layui-icon">&#xe605;</i></div>
+        </td>
+        <td>系统管理员</td><td><span style="color: #1abc9c;">-----</span></td></tr>
+        {volist name="list" id="item"}
+    <tr>
+        <td>
+            <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='2'><i class="layui-icon">&#xe605;</i></div>
+        </td>
+        <td>{$item.title}</td>
+        <td>
+            <a href="javascript:;"  style="display: inline-block;margin-right: 10px;color: #1abc9c;">分配权限</a>
+            <a href="javascript:;" onclick="item_del(this,{$item.id})" style="display: inline-block;margin-right: 10px;color: #1abc9c;">删除</a>
+        </td>
+    </tr>
+    {/volist}
+    {/present}
+
+
+
+
+    </tbody>
+</table>
+<div class="page">
+    <div>
+        {present name="list"}
+        {$list|raw}
+        {/present}
+    </div>
+</div>
+
+</div>
+{/block}
+
+{block name="footer"}
+<script>
+    layui.use(['form','laydate'], function(){
+        $ = layui.jquery;
+        var laydate = layui.laydate;
+        var form = layui.form;
+
+
+        form.on('submit(search)', function(data){
+            var param = data.field.title
+            window.location.href = "{:url('[authgroup.search]')}"+"?title="+param
+        });
+
+
+    });
+
+//新增角色
+    function item_add() {
+        layer.open({
+            //formType: 2,//这里依然指定类型是多行文本框，但是在下面content中也可绑定多行文本框
+            title: '新增角色',
+            area: ['380px', '190px'],
+            btnAlign: 'c',
+            closeBtn:'1',//右上角的关闭
+            content: `<div class="layui-form-item">
+            <label for="phone_number" class="layui-form-label">角色名称:
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="title" name="title" required="" lay-verify=""
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>`,
+            btn:['确认','关闭'],
+            yes: function (index, layero) {
+                var value = $('#title').val();
+                $.ajax({
+                    type:"post",
+                    data:{title:value},
+                    url:"{:url('[authgroup.save]')}",
+                    dataType: "json",
+                    success:function (res) {
+                        if( res.code ==1 ){
+                            layer.msg(res.data.msg,{icon:1,time:1000},function () {
+                                setTimeout('window.location.reload()',1000);
+                            });
+                        }else{
+                            layer.msg(res.msg,function () {
+                                setTimeout('window.location.reload()',1000);
+                            });
+                        }
+                    },error:function ( jqXHR, textStatus, errorThrown) {
+                        layer.msg(jqXHR.statusText);
+                    }
+                })
+                layer.close(index);
+            //可执行确定按钮事件并把备注信息（即多行文本框值）存入需要的地方
+            },
+            close:function(index)
+            {
+                return false;
+            }
+        });
+
+    }
+
+    /*删除*/
+    function item_del(obj,id){
+        layer.confirm('确认要删除吗？',function(index){
+            //发异步删除数据
+            $.ajax({
+                'type':'post',
+                'url':"{:url('[authgroup.del]')}",
+                'data':{'id':id},
+                'dataType':'json',
+                success:function(res){
+                    if( res.code ==1 ){
+                        $(obj).parents("tr").remove();
+                        layer.msg(res.data.msg,{icon:1,time:1000});
+                    }else{
+                        layer.msg(res.msg);
+                    }
+                },error:function ( jqXHR, textStatus, errorThrown) {
+                    layer.msg(jqXHR.statusText);
+                }
+            })
+
+        });
+    }
+
+
+</script>
+
+</body>
+
+</html>
+{/block}

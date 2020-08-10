@@ -1,0 +1,227 @@
+{extend name="common:base" /}
+{block name="header"}
+{__block__}
+<!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+<!--[if lt IE 9]>
+<script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+<script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+{/block}
+{block name="content"}
+
+{block name="content"}
+<body class="layui-anim layui-anim-up">
+<div class="x-body">
+    <blockquote class="layui-elem-quote">实名认证申请<a class="layui-btn layui-btn-primary layui-btn-sm" style="float:right" href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">ဂ</i>刷新</a></blockquote>
+
+    <xblock>
+        <div style="line-height:30px;"><i class="layui-icon" style="font-size:18px;">&#xe615;</i><span style="padding-left:5px;">筛选查询</span></div>
+    </xblock>
+    <div class="layui-row">
+        <form class="layui-form layui-col-md12 x-so" action="{:url('[authentication.search]')}" method="get">
+            <label for="phone_number">手机号码:</label>
+            <input class="layui-input" value="{present name='params.phone_number'}{$params.phone_number}{/present}" placeholder="请输入手机号码" name="phone_number" style="margin-right: 10px" >
+            {:token()}
+            <label for="real_name">真实姓名:</label>
+            <input type="text" name="real_name" value="{present name='params.real_name'}{$params.real_name}{/present}"  placeholder="请输入真实姓名"  class="layui-input" style="margin-right: 10px">
+            <label for="identity_card">证件号码:</label>
+            <input type="text" name="identity_card" value="{present name='params.identity_card'}{$params.identity_card}{/present}"  placeholder="请输入证件号码"  class="layui-input" style="margin-right: 10px">
+            <label for="status">状态:</label>
+            <div class="layui-input-inline">
+                <select name="status">
+                    <option value="">请选择</option>
+                    <option value="0" {present name="params.status"}{if $params.status==1}selected{/if}{/present}>待处理</option>
+                    <option value="1" {present name="params.status"}{if $params.status==2}selected{/if}{/present}>已处理</option>
+                    <option value="2" {present name="params.status"}{if $params.status==3}selected{/if}{/present}>已拒绝</option>
+                </select>
+            </div>
+            <button type="submit" class="layui-btn"  lay-submit="" lay-filter="search">开始筛选</button>
+        </form>
+    </div>
+    <table class="layui-table">
+        <thead>
+        <tr>
+            <th>
+                <div class="layui-unselect header layui-form-checkbox" lay-skin="primary"><i class="layui-icon">&#xe605;</i></div>
+            </th>
+            <th>编号</th>
+            <th>手机号码</th>
+            <th>真实姓名</th>
+            <th>身份证号码</th>
+            <th>身份证正反面</th>
+            <th>申请时间</th>
+            <th>状态</th>
+            <th width="150">操作</th></tr>
+        </thead>
+        <tbody>
+
+        {present name="message"}
+        <th colspan="9">{$message}</th>
+        {/present}
+        {present name="result"}
+        {volist name="result" id="item"}
+        <tr>
+            <td>
+                <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='2'><i class="layui-icon">&#xe605;</i></div>
+            </td>
+            <td>{$item.id}</td>
+            <td>{$item.phone_number}</td>
+            <td>{$item.real_name}</td>
+            <td>{$item.identity_card}</td>
+            <td>{volist name="item.identity_card_img" id="pic"}
+                <img src="{$pic}" width="50" height="50" style="margin-right: 5px;cursor: pointer;" title="点击查看" alt="点击查看" onclick="previewImg(this)">
+                {/volist}
+            </td>
+            <td>{$item.application_time}</td>
+            <td>{$item.status}</td>
+            <td class="td-manage">
+                {if $item.status!=0}
+                <a title="通过"  onclick="item_adopt(this,{$item.id})" href="javascript:;">
+                    <button type="button" class="layui-btn layui-btn-xs layui-btn-normal"><i class="layui-icon">&#xe605;</i>通过</button>
+                </a>
+                <a onclick="item_reject(this,{$item.id})" title="拒绝" href="javascript:;">
+                    <button type="button" class="layui-btn layui-btn-xs layui-btn-danger"><i class="layui-icon">&#x1006;</i>拒绝</button>
+                </a>
+                {/if}
+            </td>
+        </tr>
+        {/volist}
+
+        {/present}
+
+        {present name="list"}
+        {volist name="list" id="item"}
+        <tr>
+            <td>
+                <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='2'><i class="layui-icon">&#xe605;</i></div>
+            </td>
+            <td>{$item.id}</td>
+            <td>{$item.phone_number}</td>
+            <td>{$item.real_name}</td>
+            <td>{$item.identity_card}</td>
+            <td>{volist name="item.identity_card_img" id="pic"}
+                <img src="{$pic}" width="50" height="50" style="margin-right: 5px;cursor: pointer;" title="点击查看" alt="点击查看" onclick="previewImg(this)">
+                {/volist}
+            </td>
+            <td>{$item.application_time}</td>
+            <td>{$item.status}</td>
+            <td class="td-manage">
+                {if $item.status=='待处理'}
+                <a title="通过"  onclick="item_adopt(this,{$item.id})" href="javascript:;">
+                    <button type="button" class="layui-btn layui-btn-xs layui-btn-normal"><i class="layui-icon">&#xe605;</i>通过</button>
+                </a>
+                <a onclick="item_reject(this,{$item.id})" title="拒绝" href="javascript:;">
+                    <button type="button" class="layui-btn layui-btn-xs layui-btn-danger"><i class="layui-icon">&#x1006;</i>拒绝</button>
+                </a>
+                {/if}
+            </td>
+        </tr>
+        {/volist}
+        {/present}
+
+
+        </tbody>
+    </table>
+    <div class="page">
+        <div>
+            {present name="result"}
+            {$result|raw}
+            {/present}
+            {present name="list"}
+            {$list|raw}
+            {/present}
+        </div>
+    </div>
+
+</div>
+{/block}
+
+{block name="footer"}
+<script>
+    layui.use(['laydate','form'], function(){
+        $ = layui.jquery;
+        var laydate = layui.laydate;
+        var form = layui.form;
+
+    });
+
+    //预览身份证
+    function previewImg(obj) {
+        var img = new Image();
+        img.src = obj.src;
+        var imgHtml = "<img src='" + obj.src + "' width='500px' height='400px'/>";
+        //弹出层
+        layer.open({
+            type: 1,
+            shade: 0.8,
+            offset: 'auto',
+            area: ['auto'],  // area: [width + 'px',height+'px']  //原图显示
+            shadeClose:true,
+            scrollbar: false,
+            title: "图片预览", //不显示标题
+            content: imgHtml, //捕获的元素，注意：最好该指定的元素要存放在body最外层，否则可能被其它的相对元素所影响
+            cancel: function () {
+                //layer.msg('捕获就是从页面已经存在的元素上，包裹layer的结构', { time: 5000, icon: 6 });
+            }
+        });
+    }
+
+
+    /*通过认证*/
+    function item_adopt(obj,id){
+        layer.confirm('确认通过该用户实名认证吗？',function(index){
+            $.ajax({
+                type:'post',
+                data:{id:id,status:1},
+                url:"{:url('[authentication.manage]')}",
+                dataType:'json',
+                success:function (res) {
+                    if( res.code ==1 ){
+                        layer.msg(res.data.msg,{icon:1,time:1000},function () {
+                            setTimeout('window.location.reload()',1000);
+                        });
+                    }else{
+                        layer.msg(res.msg,function () {
+                            setTimeout('window.location.reload()',1000);
+                        });
+                    }
+                },error:function ( jqXHR, textStatus, errorThrown) {
+                    layer.msg(jqXHR.statusText);
+                }
+            })
+            
+        });
+    }
+
+    /*拒绝认证*/
+    function item_reject(obj,id){
+        layer.confirm('确认拒绝该用户实名认证吗？',function(index){
+            $.ajax({
+                type:'post',
+                data:{id:id,status:2},
+                url:"{:url('[authentication.manage]')}",
+                dataType:'json',
+                success:function (res) {
+                    if( res.code ==1 ){
+                        layer.msg(res.data.msg,{icon:1,time:1000},function () {
+                            setTimeout('window.location.reload()',1000);
+                        });
+                    }else{
+                        layer.msg(res.msg,function () {
+                            setTimeout('window.location.reload()',1000);
+                        });
+                    }
+                },error:function ( jqXHR, textStatus, errorThrown) {
+                    layer.msg(jqXHR.statusText);
+                }
+            })
+
+        });
+    }
+</script>
+
+</body>
+
+</html>
+{/block}

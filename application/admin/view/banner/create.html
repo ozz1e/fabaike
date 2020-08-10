@@ -1,0 +1,110 @@
+{extend name="common:base" /}
+{block name="header"}{__block__}{/block}
+
+{block name="content"}
+<body>
+<div class="x-body layui-anim layui-anim-up">
+    <form class="layui-form">
+        <div class="layui-form-item">
+            <label for="L_pic" class="layui-form-label">
+                上传图片
+            </label>
+            <a href="javascript:;" title="点击上传" alt="点击上传" id="upload_banner_pic">
+                <i class="iconfont" style="font-size: 30px;">&#xe6a8;</i>
+            </a>
+
+        </div>
+        <div class="layui-form-item">
+            <label for="L_url" class="layui-form-label">
+                跳转地址
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="url" name="url" required="" lay-verify="url"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="L_sort" class="layui-form-label">
+                排序
+            </label>
+            <div class="layui-input-inline">
+                <input type="number" id="sort" name="sort" value="100" required="" lay-verify="sort"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="L_is_index" class="layui-form-label">
+                设为首页
+            </label>
+            <div class="layui-input-inline">
+                <input type="checkbox" value="1" id="index_switch" checked="" name="is_index"  lay-skin="switch" lay-filter="is_index" lay-text="">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <button  class="layui-btn" lay-filter="cancel" lay-submit="">
+                取消
+            </button>
+            <button  class="layui-btn" lay-filter="add" lay-submit="" id="add_btn">
+                确定
+            </button>
+        </div>
+    </form>
+</div>
+{/block}
+
+{block name="footer"}
+<script>
+    layui.use(['form','layer','upload'], function(){
+        $ = layui.jquery;
+        var form = layui.form
+            ,layer = layui.layer
+            ,upload = layui.upload;
+
+
+        //监听switch开关
+        form.on('switch(is_index)', function(data){
+            if( data.elem.checked ){
+                $("#index_switch").attr("value",1)
+            }else{
+                $("#index_switch").attr("value",0)
+            }
+        });
+
+
+        //选完文件后不自动上传
+        upload.render({
+            elem: '#upload_banner_pic'
+            ,accept:"images"
+            ,size:1024*3    //限制banner大小3M
+            ,url: "{:url('[banner.add]')}"
+            ,data: {
+                url: function(){
+                    return $('#url').val();
+                },
+                is_index:function () {
+                    return $('#index_switch').attr('value');
+                }
+            }
+            ,auto: false
+            //,multiple: true
+            ,bindAction: '#add_btn'
+            ,done: function(res){
+                             // 获得frame索引
+                var index = parent.layer.getFrameIndex(window.name);
+                parent.location.reload();
+                layer.msg(res.data.msg,{time:1500},function () {
+                    parent.layer.close(index);
+                });
+            },error: function(index, upload){
+                layer.msg('上传失败');
+            }
+        });
+
+    });
+</script>
+
+</body>
+
+</html>
+{/block}

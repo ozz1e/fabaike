@@ -1,0 +1,2 @@
+<?php
+Route::get('getcustomerlist','admin/customer/index')->name('[customer.list]');

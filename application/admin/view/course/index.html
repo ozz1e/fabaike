@@ -1,0 +1,209 @@
+{extend name="common:base" /}
+{block name="header"}{__block__}{/block}
+
+{block name="content"}
+<body>
+<div class="x-body">
+<blockquote class="layui-elem-quote">课程管理<a class="layui-btn layui-btn-primary layui-btn-sm" style="float:right" href="javascript:location.replace(location.href);" title="刷新">
+                                                     <i class="layui-icon" style="line-height:30px">ဂ</i>刷新</a></blockquote>
+    <xblock>
+        <div style="line-height:30px;"><i class="layui-icon" style="font-size:18px;">&#xe615;</i><span style="padding-left:5px;">筛选查询</span></div>
+    </xblock>
+    <div>
+        <form class="layui-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                    标题:
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" value="{present name='param'}{$param}{/present}" name="title" required="" lay-verify=""
+                           autocomplete="off" class="layui-input">
+                </div>
+                <button type="button" class="layui-btn" lay-filter="search" lay-submit="">开始筛选</button>
+            </div>
+        </form>
+    <xblock>
+        <button class="layui-btn" onclick="x_admin_show('新增课程','{:url("[course.create]")}',400,450)"><i class="layui-icon"></i>新增</button>
+    </xblock>
+    <table class="layui-table layui-form" id="courselist">
+        <thead>
+        <tr>
+            <th>
+                <div class="layui-unselect header layui-form-checkbox" lay-skin="primary"><i class="layui-icon">&#xe605;</i></div>
+            </th>
+            <th width="20">id</th>
+            <th>标题</th>
+            <th>简介</th>
+            <th>播放数量</th>
+            <th width="50">价格(元)</th>
+            <th>附件</th>
+            <th>上传时间</th>
+            <th width="50">状态</th>
+            <th width="200">操作</th>
+            </tr>
+        </thead>
+        <tbody>
+
+        {present name="result"}
+        {volist name="result" id="item"}
+        <tr>
+            <td>
+                <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='2'><i class="layui-icon">&#xe605;</i></div>
+            </td>
+            <td>{$item.id}</td>
+            <td>{$item.title}</td>
+            <td>{$item.intro}</td>
+            <td>{$item.hits}</td>
+            <td>{$item.price}</td>
+            <td>{$item.file_name}</td>
+            <td>{$item.create_time}</td>
+            <td>{$item.status}</td>
+            <td>
+                <a title="查看" class="layui-btn layui-btn-xs layui-btn-normal" onclick="item_del(this,{$item.id})" href="javascript:;">
+                    查看
+                </a>
+                <a title="编辑" class="layui-btn layui-btn-xs" onclick="x_admin_show('编辑课程','{:url("[course.edit]",["id"=>$item.id])}',400,520)" href="javascript:;">
+                编辑
+                </a>
+                {if $item.status=='正常'}
+                <a title="下架" class="layui-btn layui-btn-xs layui-btn-warm" onclick="item_status(this,{$item.id})" href="javascript:;">
+                    下架
+                </a>
+                {/if}
+                <a title="删除" class="layui-btn layui-btn-xs layui-btn-danger" onclick="item_del(this,{$item.id})" href="javascript:;">
+                    删除
+                </a>
+            </td>
+        </tr>
+        {/volist}
+        {/present}
+        {notempty name="message"}
+        <tr><td colspan="10">{$message}</td><tr>
+            {/notempty}
+
+        {present name="list"}
+        {volist name="list" id="item"}
+        <tr>
+            <td>
+                <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='2'><i class="layui-icon">&#xe605;</i></div>
+            </td>
+            <td>{$item.id}</td>
+            <td>{$item.title}</td>
+            <td>{$item.intro}</td>
+            <td>{$item.hits}</td>
+            <td>{$item.price}</td>
+            <td>{$item.file_name}</td>
+            <td>{$item.create_time}</td>
+            <td>{$item.status}</td>
+            <td>
+                <a title="查看" class="layui-btn layui-btn-xs layui-btn-normal" onclick="item_del(this,{$item.id})" href="javascript:;">
+                    查看
+                </a>
+                <a title="编辑" class="layui-btn layui-btn-xs" onclick="x_admin_show('编辑课程','{:url("[course.edit]",["id"=>$item.id])}',400,520)" href="javascript:;">
+                编辑
+                </a>
+                {if $item.status=='正常'}
+                <a title="下架" class="layui-btn layui-btn-xs layui-btn-warm" onclick="item_status(this,{$item.id})" href="javascript:;">
+                    下架
+                </a>
+                {/if}
+                <a title="删除" class="layui-btn layui-btn-xs layui-btn-danger" onclick="item_del(this,{$item.id})" href="javascript:;">
+                    删除
+                </a></td>
+        </tr>
+        {/volist}
+        {/present}
+
+
+        </tbody>
+    </table>
+    <div class="page">
+        <div>
+            {present name="list"}
+            {$list|raw}
+            {/present}
+            {present name="result"}
+            {$result|raw}
+            {/present}
+        </div>
+    </div>
+
+</div>
+{/block}
+
+{block name="footer"}
+<script>
+    layui.use(['form','layer','upload'], function(){
+        $ = layui.jquery;
+        var form = layui.form
+            ,layer = layui.layer
+            ,upload = layui.upload;
+
+        form.on('submit(search)', function(data){
+            var param = data.field.title
+            if( !param ){
+                layer.msg('查询内容不能为空')
+                return false
+            }
+            window.location.href = "{:url('[course.search]')}"+"?title="+param
+        });
+
+
+    });
+
+
+    /*删除*/
+    function item_del(obj,id){
+        layer.confirm('确认要删除吗？',function(index){
+                    //发异步删除数据
+                    $.ajax({
+                    'type':'post',
+                    'url':"{:url('[course.del]')}",
+                    'data':{'id':id},
+                    'dataType':'json',
+                    success:function(res){
+                        if(res.code==1){
+                            $(obj).parents("tr").remove();
+                            layer.msg('已删除!',{icon:1,time:1000});
+                        }else{
+                            layer.msg(res.msg)
+                        }
+                    },error:function(){
+                        layer.msg('删除失败')
+                        return false
+                    }
+                    })
+
+                });
+            }
+
+    /*下架*/
+        function item_status(obj,id){
+            layer.confirm('确认要下架吗？',function(index){
+                        $.ajax({
+                        'type':'post',
+                        'url':"{:url('[course.offsale]')}",
+                        'data':{'id':id},
+                        'dataType':'json',
+                        success:function(res){
+                            if(res.code==1){
+                                layer.msg(res.data.msg,{icon:1,time:1000});
+                                location.reload();
+                            }else{
+                                layer.msg(res.data.msg)
+                                return false
+                            }
+                        },error:function(){
+                            layer.msg('操作失败')
+                            return false
+                        }
+                        })
+
+                    });
+                }
+</script>
+
+</body>
+
+</html>
+{/block}
