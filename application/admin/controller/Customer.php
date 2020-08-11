@@ -2,12 +2,15 @@
 
 namespace app\admin\controller;
 
-use think\Controller;
 use think\Request;
 use app\admin\model\Customer as CustomerModel;
 
-class Customer extends Controller
+class Customer extends Base
 {
+    //权限控制
+    protected $middleware = ['Login','Auth'];
+
+
     /**
      * 显示客户列表
      *
@@ -93,6 +96,11 @@ class Customer extends Controller
         //
     }
 
+    /**
+     * 搜索指定客户
+     * @param Request $request
+     * @return mixed|\think\response\Json
+     */
     public function search(Request $request)
     {
         $filter_content = $request->only('wechat_name,phone_number,real_name,identity_card,type,__token__');

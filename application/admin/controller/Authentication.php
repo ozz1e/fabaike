@@ -8,6 +8,9 @@ use think\Request;
 
 class Authentication extends Controller
 {
+    //权限控制
+    protected $middleware = ['Login','Auth'];
+
     /**
      * 显示实名认证列表
      * @return mixed

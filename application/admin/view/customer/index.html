@@ -57,7 +57,7 @@
             <th>真实姓名</th>
             <th>身份证号码</th>
             <th>注册时间</th>
-            <th width="100">操作</th></tr>
+            </tr>
         </thead>
         <tbody>
 
@@ -79,14 +79,6 @@
             <td>{$item.real_name}</td>
             <td>{$item.identity_card}</td>
             <td>{$item.regtime}</td>
-            <td class="td-manage">
-                <a title="编辑"  onclick="x_admin_show('编辑','member-edit.html',600,400)" href="javascript:;">
-                    <button type="button" class="layui-btn layui-btn-xs layui-btn-normal">编辑</button>
-                </a>
-                <a onclick="x_admin_show('重置密码','member-password.html',600,400)" title="重置密码" href="javascript:;">
-                    <button type="button" class="layui-btn layui-btn-xs layui-btn-danger">重置密码</button>
-                </a>
-            </td>
         </tr>
             {/volist}
 
@@ -107,14 +99,6 @@
            <td>{$item.real_name}</td>
            <td>{$item.identity_card}</td>
            <td>{$item.regtime}</td>
-           <td class="td-manage">
-               <a title="编辑"  onclick="x_admin_show('编辑','member-edit.html',600,400)" href="javascript:;">
-                   <button type="button" class="layui-btn layui-btn-xs layui-btn-normal">编辑</button>
-               </a>
-               <a onclick="x_admin_show('重置密码','member-password.html',600,400)" title="重置密码" href="javascript:;">
-                   <button type="button" class="layui-btn layui-btn-xs layui-btn-danger">重置密码</button>
-               </a>
-           </td>
        </tr>
        {/volist}
         {/present}

@@ -7,6 +7,9 @@ use app\admin\model\Banner as BannerModel;
 
 class Banner extends Base
 {
+    //权限控制
+    protected $middleware = ['Login','Auth'];
+
     /**
      * 显示banner列表
      *

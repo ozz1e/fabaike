@@ -8,6 +8,9 @@ use app\admin\model\Withdrawal as WithdrawalMdeol;
 
 class Withdrawal extends Controller
 {
+    //权限控制
+    protected $middleware = ['Login','Auth'];
+
     /**
      * 显示提现列表
      *

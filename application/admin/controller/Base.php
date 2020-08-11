@@ -8,4 +8,5 @@ use think\Request;
 class Base extends Controller
 {
 
+
 }

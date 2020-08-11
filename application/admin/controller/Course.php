@@ -9,6 +9,10 @@ use think\response\Json;
 
 class Course extends Controller
 {
+
+    //权限控制
+    protected $middleware = ['Login','Auth'];
+
     protected static $video_path = '';
     /**
      * 显示课程列表

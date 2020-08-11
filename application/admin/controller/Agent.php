@@ -8,6 +8,9 @@ use app\admin\model\Agent as AgentModel;
 
 class Agent extends Controller
 {
+
+    //权限控制
+    protected $middleware = ['Login','Auth'];
     /**
      * 显示经纪人列表
      * @return \think\Response

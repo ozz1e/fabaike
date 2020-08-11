@@ -4,12 +4,14 @@
 {block name="content"}
 <body>
 <div class="x-body">
+    <blockquote class="layui-elem-quote">合同管理<a class="layui-btn layui-btn-primary layui-btn-sm" style="float:right" href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">ဂ</i>刷新</a></blockquote>
 
-<div class="x-body">
-    <xblock>
-        <button class="layui-btn" onclick="x_admin_show('新增图片','{:url("[banner.create]")}',450,450)"><i class="layui-icon"></i>新增</button>
-    </xblock>
-    <table class="layui-table layui-form" id="bannerlist">
+<xblock>
+    <button class="layui-btn" onclick="x_admin_show('新增规则','{:url("[auth.create]")}',450,400)"><i class="layui-icon"></i>新增</button>
+</xblock>
+
+    <table class="layui-table layui-form">
         <thead>
         <tr>
             <th>
@@ -41,7 +43,7 @@
                 {/if}
                 </td>
                 <td>
-                <a title="编辑" class="layui-btn layui-btn-normal layui-btn-xs" onclick="item_edit(this,{$item.id})" href="javascript:;">
+                <a title="编辑" class="layui-btn layui-btn-normal layui-btn-xs" onclick="x_admin_show('编辑权限','{:url("[auth.edit]",["id"=>$item.id])}',450,400)" href="javascript:;">
                                                     编辑
                                                   </a>
                 <a title="删除" class="layui-btn layui-btn-danger layui-btn-xs" onclick="item_del(this,{$item.id})" href="javascript:;">
@@ -64,20 +66,10 @@
 
 {block name="footer"}
 <script>
-    layui.use(['form','laydate'], function(){
+    layui.use(['form'], function(){
         $ = layui.jquery;
-        var laydate = layui.laydate;
         var form = layui.form;
 
-        //执行一个laydate实例
-        laydate.render({
-            elem: '#start' //指定元素
-        });
-
-        //执行一个laydate实例
-        laydate.render({
-            elem: '#end' //指定元素
-        });
 
         //监听switch开关
         form.on('switch(is_index)', function(data){
@@ -108,7 +100,7 @@
             //发异步删除数据
             $.ajax({
             'type':'post',
-            'url':"{:url('[banner.del]')}",
+            'url':"{:url('[auth.del]')}",
             'data':{'id':id},
             'dataType':'json',
             success:function(res){
@@ -125,7 +117,6 @@
             })
 
         });
-    }
 
     }
 </script>

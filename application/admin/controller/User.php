@@ -10,6 +10,7 @@ class User extends Base
 {
     protected $middleware = [
         'Login' 	=> ['except' 	=> ['login','signin'] ],
+        'Auth'
     ];
 
     /**

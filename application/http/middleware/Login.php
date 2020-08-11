@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * 判断登录中间件
+ */
 namespace app\http\middleware;
 
 use think\facade\Session;

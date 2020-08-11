@@ -62,7 +62,13 @@ Route::get('contractedit','admin/contract/edit')->name('contract.edit');
 Route::get('contractlist','admin/contract/index')->name('contract.list');
 
 //权限管理
+Route::post('authdel','admin/auth/delete')->name('auth.del');
+Route::post('authupdate','admin/auth/update')->name('auth.update');
+Route::get('authedit','admin/auth/edit')->name('auth.edit');
+Route::post('authadd','admin/auth/save')->name('auth.add');
+Route::get('authcreate','admin/auth/create')->name('auth.create');
 Route::get('authlist','admin/auth/index')->name('auth.list');
+Route::get('notfound','admin/auth/notfound')->name('auth.lost');
 
 
 //banner管理路由

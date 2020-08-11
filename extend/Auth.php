@@ -1,5 +1,5 @@
 <?php
-namespace Auth;
+namespace AuthRule;
 /**
  * 权限认证类
  * 功能特性：
@@ -17,7 +17,7 @@ class Auth
 {
     //默认配置
     protected $_config = array(
-        'AUTH_ON'           => true, // 认证开关
+        'AUTH_ON'           => false, // 认证开关
         'AUTH_TYPE'         => 1, // 认证方式，1为实时认证；2为登录认证。
         'AUTH_GROUP'        => 'auth_group', // 用户组数据表名
         'AUTH_GROUP_ACCESS' => 'auth_group_access', // 用户-用户组关系表
@@ -104,7 +104,7 @@ class Auth
         if (isset($groups[$uid])) {
             return $groups[$uid];
         }
-        $sql = "select uid,group_id,title,rules from ".$this->_config['prefix'].$this->_config['AUTH_GROUP_ACCESS']." a left join ".$this->_config['prefix'].$this->_config['AUTH_GROUP']." g on a.group_id=g.id where a.uid=".$uid." and g.status='1'";
+        $sql = "select uid,group_id,title,rules from ".$this->_config['prefix'].$this->_config['AUTH_GROUP_ACCESS']." a left join ".$this->_config['prefix'].$this->_config['AUTH_GROUP']." g on a.group_id=g.id where a.uid=".$uid." and g.status=1";
         $user_groups = db()->query($sql);
         $groups[$uid] = $user_groups ?: array();
         return $groups[$uid];
@@ -117,7 +117,7 @@ class Auth
     protected function getAuthList($uid, $type)
     {
         static $_authList = array(); //保存用户验证通过的权限列表
-        $t                = implode(',', (array) $type);
+        $t = implode(',', (array) $type);
         if (isset($_authList[$uid . $t])) {
             return $_authList[$uid . $t];
         }
@@ -137,7 +137,6 @@ class Auth
         }
         $map = [
             'id'=>$ids,
-            'type'=>$type,
             'status'=>1
         ];
         //读取用户组所有权限规则

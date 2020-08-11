@@ -9,6 +9,9 @@ use think\response\Json;
 
 class Contract extends Controller
 {
+    //权限控制
+    protected $middleware = ['Login','Auth'];
+
     /**
      * 显示合同列表
      *

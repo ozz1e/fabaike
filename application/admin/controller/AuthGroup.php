@@ -8,6 +8,9 @@ use think\Request;
 
 class AuthGroup extends Controller
 {
+    //权限控制
+    protected $middleware = ['Login','Auth'];
+
     /**
      * 显示角色列表
      * @return mixed

@@ -8,6 +8,9 @@ use app\admin\model\Order as OrderModel;
 
 class Order extends Controller
 {
+    //权限控制
+    protected $middleware = ['Login','Auth'];
+
     /**
      * 显示订单列表
      *
