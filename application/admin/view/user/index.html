@@ -56,9 +56,11 @@
         <td>{$item.title|default="暂无"}</td>
         <td>{$item.create_time|date='Y-m-d H:m:i'}</td>
         <td>
-            <a href="javascript:;" style="color:#1abc9c;display: inline-block;margin-right: 15px;">选择角色</a>
+            {if $item.id !=1}
+            <a href="javascript:;" onclick="x_admin_show('选择角色','{:url("[user.selectrole]",['id'=>$item.id])}',400,350)" style="color:#1abc9c;display: inline-block;margin-right: 15px;">选择角色</a>
             <a href="javascript:;" onclick="x_admin_show('重置密码','{:url("[user.reset]",['id'=>$item.id])}',400,450)" style="color:#1abc9c;display: inline-block;margin-right: 15px;">重置密码</a>
             <a href="javascript:;" style="color:#1abc9c;display: inline-block;margin-right: 15px;">删除</a>
+            {/if}
         </td>
     </tr>
     {/volist}
@@ -80,9 +82,11 @@
         <td>{$item.title|default="暂无"}</td>
         <td>{$item.create_time|date='Y-m-d H:m:i'}</td>
         <td>
-            <a href="javascript:;" style="color:#1abc9c;display: inline-block;margin-right: 15px;">选择角色</a>
+            {if $item.id !=1}
+            <a href="javascript:;" onclick="x_admin_show('选择角色','{:url("[user.selectrole]",['id'=>$item.id])}',400,300)" style="color:#1abc9c;display: inline-block;margin-right: 15px;">选择角色</a>
             <a href="javascript:;" onclick="x_admin_show('重置密码','{:url("[user.reset]",['id'=>$item.id])}',400,270)"  style="color:#1abc9c;display: inline-block;margin-right: 15px;">重置密码</a>
             <a href="javascript:;" onclick="item_del(this,{$item.id})" style="color:#1abc9c;display: inline-block;margin-right: 15px;">删除</a>
+            {/if}
         </td>
     </tr>
     {/volist}

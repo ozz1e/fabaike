@@ -9,8 +9,8 @@ use app\admin\model\User as UserModel;
 class User extends Base
 {
     protected $middleware = [
-        'Login' 	=> ['except' 	=> ['login','signin'] ],
-        'Auth'
+        'Login' 	=> ['except' 	=> ['login','signin','logout'] ],
+        'Auth'      => ['except'    =>  ['login','signin','logout']]
     ];
 
     /**
@@ -101,6 +101,11 @@ class User extends Base
         return json($result);
     }
 
+    /**
+     * 删除管理用户
+     * @param Request $request
+     * @return \think\response\Json
+     */
     public function delete(Request $request)
     {
         if( !$request->isAjax() || !$request->isPost() ) return json(['code'=>0,'msg'=>'请求方式有误']);
@@ -108,6 +113,35 @@ class User extends Base
         if( !isset($params) || empty($params) ) return json(['code'=>0,'msg'=>'提交数据异常']);
 
         $result = UserModel::deleteItem($params);
+        return json($result);
+    }
+
+    /**
+     * 选择角色页面
+     * @param Request $request
+     * @return mixed|\think\response\Json
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function selectrole(Request $request)
+    {
+        $params = $request->only('id');
+        if( !isset($params) || empty($params) || !is_numeric($params['id']) ) return json(['code'=>0,'msg'=>'提交数据异常']);
+        $rolelist = \app\admin\model\AuthGroup::where('id','<>',1)->select();
+        return $this->fetch('selectrole',[
+            'id'        =>  $params['id'],
+            'rolelist'=>$rolelist
+        ]);
+    }
+
+    public function bindrole(Request $request)
+    {
+        if( !$request->isAjax() || !$request->isPost() ) return json(['code'=>0,'msg'=>'请求方式有误']);
+        $params = $request->only('uid,group_id');
+        if( !isset($params) || empty($params) ) return json(['code'=>0,'msg'=>'提交数据异常']);
+
+        $result = UserModel::bindItem($params);
         return json($result);
     }
 

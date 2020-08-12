@@ -1,0 +1,83 @@
+{extend name="common:base" /}
+{block name="header"}{__block__}{/block}
+
+{block name="content"}
+<body>
+<div class="x-body layui-anim layui-anim-up">
+    <form class="layui-form">
+        <div class="layui-form-item">
+            <div>角色名称：{$role_title}</div>
+            <input type="hidden" name="id" value="{$id}">
+                {volist name="list" id="item"}
+                <input type="checkbox" name="rules" value="{$item.id}" title="{$item.title}" lay-skin="primary" {in name="$item.id" value="$had" }checked{/in}>
+                {/volist}
+        </div>
+
+        <div class="layui-form-item" style="margin-top: 15px;text-align: center;">
+            <a  class="layui-btn" id="cancel">
+                取消
+            </a>
+            <button  class="layui-btn" lay-filter="add" lay-submit="" >
+                确定
+            </button>
+        </div>
+    </form>
+</div>
+{/block}
+
+{block name="footer"}
+<script>
+    layui.use(['form','layer'], function(){
+        $ = layui.jquery;
+        var form = layui.form
+            ,layer = layui.layer
+
+
+        // form.on('checkbox(rules)', function(data){
+        //     console.log(data.value); //复选框value值，也可以通过data.elem.value得到
+        // });
+
+        //监听提交
+        form.on('submit(add)', function(data){
+            var id = $(" input[ name='id' ] ").val()
+            var arr_box = [];
+            $("input:checkbox[name='rules']:checked").each(function() {
+                arr_box.push($(this).val());
+            });
+            //发异步，把数据提交给php
+            $.ajax({
+                type:'post',
+                data:{rules:arr_box,id:id},
+                dataType:'json',
+                url:'{:url("[authgroup.grant]")}',
+                success:function (res) {
+
+                },error:function () {
+                    return false
+                }
+
+            })
+            layer.msg("分配权限成功", {icon: 1},function () {
+                // 获得frame索引
+                var index = parent.layer.getFrameIndex(window.name);
+                //关闭当前frame
+                parent.layer.close(index);
+            });
+            return false;
+        });
+
+
+
+        //取消按钮
+        $("#cancel").on("click",function () {
+            var index = parent.layer.getFrameIndex(window.name);
+            parent.layer.close(index);
+        })
+
+    });
+</script>
+
+</body>
+
+</html>
+{/block}

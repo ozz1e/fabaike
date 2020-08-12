@@ -4,6 +4,8 @@
 Route::post('userdel','admin/user/delete')->name('user.del');
 Route::post('useradd','admin/user/save')->name('user.add');
 Route::get('usersearch','admin/user/search')->name('user.search');
+Route::post('userbind','admin/user/bindrole')->name('user.bindrole');
+Route::get('userselectrole','admin/user/selectrole')->name('user.selectrole');
 Route::post('userresetpass','admin/user/resetpass')->name('user.resetpass');
 Route::get('userreset','admin/user/reset')->name('user.reset');
 Route::get('usercreate','admin/user/create')->name('user.create');
@@ -12,6 +14,8 @@ Route::get('userlist','admin/user/index')->name('user.list');
 //角色管理
 Route::post('authgroupdel','admin/auth_group/delete')->name('authgroup.del');
 Route::post('authgroupadd','admin/auth_group/save')->name('authgroup.save');
+Route::post('authgroupgrant','admin/auth_group/grant')->name('authgroup.grant');
+Route::get('authauthorize','admin/auth_group/authorize')->name('authgroup.authorize');
 Route::get('authgroupsearch','admin/auth_group/search')->name('authgroup.search');
 Route::get('authgrouplist','admin/auth_group/index')->name('authgroup.list');
 

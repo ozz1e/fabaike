@@ -7,6 +7,7 @@ use think\Model;
 use think\Db;
 use think\facade\Session;
 use app\admin\validate\User as UserValidate;
+use \app\admin\model\GroupAccess;
 
 class User extends Model
 {
@@ -81,6 +82,26 @@ class User extends Model
         return ['code'=>1,'data'=>['id'=>$user->id,'msg'=>'新增用户成功']];
     }
 
+    public static function bindItem($params)
+    {
+        if( !is_numeric($params['uid']) || !is_numeric($params['group_id']) ) return ['code'=>0,'msg'=>'提交数据异常'];
+
+        try{
+            $access = GroupAccess::where('uid',$params['uid'])->find();
+            //如果该用户之前没有绑定角色 则新建；否则更新角色
+            if( !$access ){
+                $result = GroupAccess::create($params);
+                if( !$result ) return ['code'=>0,'msg'=>'用户选择角色失败'];
+            }else{
+                $access->group_id = $params['group_id'];
+                if( !$access->save() ) return ['code'=>0,'msg'=>'用户选择角色失败'];
+            }
+        }catch (Exception $e){
+            return ['code'=>0,'msg'=>$e->getMessage()];
+        }
+            return ['code'=>1,'data'=>['id'=>$params['uid'],'msg'=>'用户选择角色成功']];
+    }
+
     /**
      * 用户重置密码
      * @param $params
@@ -105,6 +126,11 @@ class User extends Model
          return ['code'=>1,'data'=>['id'=>$params['id'],'msg'=>'重置密码成功']];
     }
 
+    /**
+     * 删除管理用户
+     * @param $params
+     * @return array
+     */
     public static function deleteItem($params)
     {
         $validate = new UserValidate();

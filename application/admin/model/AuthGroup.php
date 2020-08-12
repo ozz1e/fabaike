@@ -58,6 +58,11 @@ class AuthGroup extends Model
         return ['code'=>1,'data'=>$result];
     }
 
+    /**
+     * 删除角色
+     * @param $params
+     * @return array
+     */
     public static function deleteItem($params)
     {
         if( !is_numeric($params['id']) ) return ['code'=>0,'msg'=>'提交数据异常'];
@@ -70,5 +75,43 @@ class AuthGroup extends Model
             return ['code'=>0,'msg'=>$e->getMessage()];
         }
         return ['code'=>1,'data'=>['id'=>$params['id'],'msg'=>'角色删除成功']];
+    }
+
+    /**
+     * 查询权限列表以及选中用户拥有的权限
+     * @param $params
+     * @return array
+     */
+    public static function authorizeItem($params)
+    {
+        if( empty($params['id']) || !is_numeric($params['id']) ) return ['code'=>0,'msg'=>'提交数据异常'];
+
+        try{
+            $role= static::field('rules')->get($params['id']);
+            if( !$role) return ['code'=>0,'msg'=>'没有找到角色'];
+            //角色拥有权限
+            $role_had_rules = $role['rules'];
+            //权限列表
+            $authlist = \app\admin\model\Auth::select();
+        }catch (Exception $e){
+            return ['code'=>0,'msg'=>$e->getMessage()];
+        }
+       return ['code'=>1,'data'=>['authlist'=>$authlist,'$role_had_rules'=>$role_had_rules]];
+
+    }
+
+    public static function grantItem($params)
+    {
+        if( !is_numeric($params['id']) ) return ['code'=>0,'msg'=>'提交数据异常'];
+
+        try{
+            $result = static::get($params['id']);
+            if( !$result ) return ['code'=>0,'msg'=>'没有找到需要分配权限的用户'];
+            $result->rules = implode(',',$params['rules']);
+            if( !$result->save() ) return ['code'=>0,'msg'=>'分配权限失败'];
+        }catch (Exception $e){
+            return ['code'=>0,'msg'=>$e->getMessage()];
+        }
+        return ['code'=>1,'data'=>['id'=>$params['id'],'msg'=>'分配权限成功']];
     }
 }

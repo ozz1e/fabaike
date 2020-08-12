@@ -91,6 +91,11 @@ class Auth extends Model
         return ['code'=>1,'data'=>['id'=>$params['id'],'msg'=>'规则编辑成功']];
     }
 
+    /**
+     * 删除规则
+     * @param $params
+     * @return array
+     */
     public static function deleteItem($params)
     {
         $validate = new AuthValidate();
